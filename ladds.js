@@ -8,8 +8,6 @@ map.add_edge = function(p1,p2) {
   }
 }
 
-borders = new Array();
-
 function b(p1,p2) {
   map.add_edge(p1,p2);
   map.add_edge(p2,p1);
@@ -81,7 +79,7 @@ function loop() {
     var next_idx = random_0_to_(map[last_step].length-1);
     var next_step = map[last_step][next_idx];
     if (next_step != path[path.length-2]) path.push( next_step );
-    if (starting_and_ending_nodes.indexOf(path[path.length-1])>-1) break;
+    if ((starting_and_ending_nodes.indexOf(path[path.length-1])>-1) && (path.length > 8)) break;
   }
   return path;
 }
@@ -119,15 +117,28 @@ function score(loop) {
   return score;
 }
 
-function mate(loop1, loop2) {
-  var child = new Array();
-  for(var i=0;i<loop1.length;i++) {
-    for(var j=0;j<loop2.length;j++) {
-      
-    }
+function mate_concat(loop1, loop2) {
+  return loop1.concat(loop2);
+}
+
+best = new Array();
+for(var i=0;i<10000;i++) {
+  l = loop();
+  s = score(l);
+  if (s.points > 40) {
+    console.info(l);
+    console.info(s.points);
+    best.push(l);
   }
 }
 
-l = loop();
-console.info(l);
-console.info(score(l));
+for(var i=0;i<best.length;i++) {
+  for(var j=0;j<best.length;j++) {
+    if (i!=j) {
+      var child = mate_concat(best[i],best[j]);
+      console.info(score(best[i]).points + ' + ' + score(best[j]).points + ' = ' + score(child).points);
+    }
+  }  
+}
+
+console.info(best.length + ' loops for mating');
