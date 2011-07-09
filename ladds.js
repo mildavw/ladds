@@ -125,20 +125,43 @@ best = new Array();
 for(var i=0;i<10000;i++) {
   l = loop();
   s = score(l);
-  if (s.points > 40) {
-    console.info(l);
-    console.info(s.points);
+  if (s.points > 45) {
+    out(l);
+    out(s.points);
     best.push(l);
   }
 }
+
+out(best.length + ' loops for mating');
 
 for(var i=0;i<best.length;i++) {
   for(var j=0;j<best.length;j++) {
     if (i!=j) {
       var child = mate_concat(best[i],best[j]);
-      console.info(score(best[i]).points + ' + ' + score(best[j]).points + ' = ' + score(child).points);
+      out(score(best[i]).points + ' + ' + score(best[j]).points + ' = ' + score(child).points);
     }
+  best.splice(i,1);
   }  
 }
 
-console.info(best.length + ' loops for mating');
+function draw(){
+  out('drawing');
+  var canvas = $('#map_canvas')[0];
+  if (canvas.getContext) {
+    out('canvas');
+    var ctx = canvas.getContext('2d');
+    ctx.beginPath();
+    ctx.moveTo(25,25);
+    ctx.lineTo(105,25);
+    ctx.lineTo(25,105);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#f00";
+    ctx.stroke();
+  }
+}
+draw();
+
+function out(txt) {
+  cur = $('#c').html();
+  $('#c').html(cur + '\n' + txt)
+}
