@@ -32,7 +32,7 @@ function score(loop) {
     }
   }
   
-  var score = {points:0, length:loop.length-1, streets:edges.length, backtracks:0};
+  var score = {'points':0, 'length':loop.length-1, 'streets':edges.length, 'backtracks':0};
   for(i in tally) {
     if (tally[i] > 1) {
       score.points--;
@@ -48,31 +48,34 @@ function mate_concat(loop1, loop2) {
   return loop1.concat(loop2);
 }
 
-best = new Array();
-for(var i=0;i<10000;i++) {
+while(true) {
   l = loop();
   s = score(l);
-  if (s.points > 45) {
+  if (s.points > 50) {
+    drawPath(l);
     out(l);
-    out(s.points);
-    best.push(l);
+    out(s);
+    break;
   }
 }
 
-out(best.length + ' loops for mating');
+// out(best.length + ' loops for mating');
 
-for(var i=0;i<best.length;i++) {
-  for(var j=0;j<best.length;j++) {
-    if (i!=j) {
-      var child = mate_concat(best[i],best[j]);
-      out(score(best[i]).points + ' + ' + score(best[j]).points + ' = ' + score(child).points);
-    }
-  }  
-}
+// for(var i=0;i<best.length;i++) {
+//   for(var j=0;j<best.length;j++) {
+//     if (i!=j) {
+//       var child = mate_concat(best[i],best[j]);
+//       out(score(best[i]).points + ' + ' + score(best[j]).points + ' = ' + score(child).points);
+//     }
+//   }  
+// }
 
 function out(txt) {
+  if (typeof(txt) == 'object' && !$.isArray(txt)) {
+      var new_txt = '';
+      for(var i in txt) new_txt =+ i + ': ' + txt[i] + '\t';
+      txt = new_txt;
+    }
   cur = $('#c').html();
   $('#c').html(cur + '\n' + txt)
 }
-
-map.drawPath([1,11,12]);
