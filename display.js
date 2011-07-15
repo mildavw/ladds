@@ -1,12 +1,13 @@
 function Display(graph) {
+
   this.canvas =  $('#map_canvas')[0];
   this.graph = graph;
   this.radius = 10;
-  
+
   if (this.canvas.getContext) {
     this.ctx = this.canvas.getContext('2d');
     this.ctx.lineWidth = 3;
-    this.ctx.strokeStyle = "#f00";
+    this.ctx.strokeStyle = '#f00';
   }
 
   this.out = function(txt) {
@@ -20,7 +21,7 @@ function Display(graph) {
     cur = $('#c').html();
     $('#c').html(cur + '\n' + txt)
   },
-  
+
   this.draw = function(path) {
     var points = new Array();
     for(var i=0;i<path.length;i++) {
