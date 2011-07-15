@@ -12,7 +12,9 @@ function Display(graph) {
   this.out = function(txt) {
     if (typeof(txt) == 'object' && !$.isArray(txt)) {
         var new_txt = '';
-        for(var i in txt) new_txt =+ i + ': ' + txt[i] + '\t';
+        for(var i in txt) {
+          new_txt += i + ': ' + txt[i] + ',';
+        }
         txt = new_txt;
       }
     cur = $('#c').html();
