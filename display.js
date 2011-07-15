@@ -12,11 +12,11 @@ function Display(graph) {
 
   this.out = function(txt) {
     if (typeof(txt) == 'object' && !$.isArray(txt)) {
-        var new_txt = '';
+        var new_txt = [];
         for(var i in txt) {
-          new_txt += i + ': ' + txt[i] + ',';
+          new_txt.push(i + ': ' + txt[i]);
         }
-        txt = new_txt;
+        txt = new_txt.join(', ');
       }
     cur = $('#c').html();
     $('#c').html(cur + '\n' + txt)
