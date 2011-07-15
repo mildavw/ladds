@@ -49,19 +49,19 @@ function Display(graph) {
     this.ctx.stroke();
   },
 
-  this.shorten_edge = function(a,b,r) {
-    var c = [b[0],b[1]];
-    if (a[0] == b[0]) {
-      c[1] = b[1] + (1-2*(a[1]<b[1]))*r;
-    } else if (a[1] == b[1]) {
-      c[0] = b[0] + (1-2*(a[0]<b[0]))*r;
+  this.shorten_edge = function(p1,p2,length) {
+    var p3 = [p2[0],p2[1]];
+    if (p1[0] == p2[0]) {
+      p3[1] = p2[1] + (1-2*(p1[1]<p2[1]))*length;
+    } else if (p1[1] == p2[1]) {
+      p3[0] = p2[0] + (1-2*(p1[0]<p2[0]))*length;
     } else {
-      var m = (b[1]-a[1])/(b[0]-a[0]);
-      var mx = Math.round(r*Math.sqrt(1/(1+m*m)));
-      var my = Math.round(r*Math.sqrt(1/(1+1/(m*m))));
-      c[0] = b[0] + (1-2*(a[0]<b[0]))*mx;
-      c[1] = b[1] + (1-2*(m<0))*(1-2*(a[0]<b[0]))*my;
+      var m = (p2[1]-p1[1])/(p2[0]-p1[0]);
+      var mx = Math.round(length*Math.sqrt(1/(1+m*m)));
+      var my = Math.round(length*Math.sqrt(1/(1+1/(m*m))));
+      p3[0] = p2[0] + (1-2*(p1[0]<p2[0]))*mx;
+      p3[1] = p2[1] + (1-2*(m<0))*(1-2*(p1[0]<p2[0]))*my;
     }
-    return c;
+    return p3;
   }
 }

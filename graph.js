@@ -8,9 +8,9 @@ function Graph(graph) {
 Graph.prototype = {
   add_edge: function(p1,p2) {
     if (typeof(this.node_hash[p1]) == 'undefined') {
-      this.node_hash[p1] = [p2]
+      this.node_hash[p1] = [p2];
     } else {
-      this.node_hash[p1].push(p2)
+      this.node_hash[p1].push(p2);
     }
   },
   
@@ -28,11 +28,11 @@ Graph.prototype = {
 
   generate_loop: function() {
     var center = this.graph.starting_and_ending_nodes;
-    var start_idx = this.random_0_to_(center.length-1)
+    var start_idx = this.random_0_to_(_.size(center));
     var path = [ center[start_idx] ];
     while (true) {
-      var last_step = path[path.length-1];
-      var next_options = this.node_hash[last_step]
+      var last_step = _.last(path);
+      var next_options = this.node_hash[last_step];
       var next_idx = this.random_0_to_(next_options.length-1);
       var next_step = next_options[next_idx];
       if (next_step != path[path.length-2]) path.push( next_step );
@@ -47,7 +47,7 @@ Graph.prototype = {
 
   score: function(loop) {
     var edges = new Array();
-    for(var i=0;i<loop.length-1;i++) {
+    for(var i=0;i<_.size(loop);i++) {
       var edge = [ loop[i], loop[i+1] ].sort().toString();
       if (this.streets.indexOf(edge) > -1) edges.push(edge);
     }
