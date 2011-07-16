@@ -12,15 +12,21 @@ if (hash) {
   // function mate_concat(loop1, loop2) {
   //   return loop1.concat(loop2);
   // }
+  
+  d.out('breed');
+  var kids = g.breed([1,2,5,7,14],[2,3,7,5,22]);
+  d.out(kids.length);
+  d.out(kids[0])
+  d.out(kids[1]);
 
   // while(true) {
-    l = g.generate_loop();
-    d.draw(l);
-    s = g.score(l);
+    // l = g.generate_loop();
+    // d.draw(l);
+    // s = g.score(l);
     // if (s.points > 50) {
     // d.draw(l);
-    d.out(l);
-    d.out(s);
+    // d.out(l);
+    // d.out(s);
       // break;
     // }
   // }
