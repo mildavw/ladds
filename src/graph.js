@@ -3,6 +3,7 @@ function Graph(graph) {
   this.node_hash = {};
   this.streets = new Array();
   this.initialize_node_data();
+  // this.d = new Display();
 }
 
 Graph.prototype = {
@@ -66,14 +67,26 @@ Graph.prototype = {
 
   replace_chunks: function(path1,start1,end1,path2,start2,end2) {
     // replace chunks of path1 with similar chunks of path2
-    var existing = path1.slice(start1, end1);
-    var replacements = path2.slice(start2, end2);
+    var existing = this.get_path_segment(path1, start1, end1);
+    var replacements = this.get_path_segment(path2, start2, end2);
+    if (existing[0] != replacements[0] || _.last(existing) != _.last(replacements)) {
+      // d.out('Error: illegal replace chunks!');
+      // d.out([path1,start1,end1].join(' : '));
+      // d.out([path2,start2,end2].join(' : '));
+    }
     if (!_.isEqual(existing,replacements)) {
       var index = (start1 < end1) ? start1 : end1;
-      var howmany = Math.abs(start1 - end1);
+      var howmany = 1+Math.abs(start1 - end1);
       path1.splice(index,howmany,replacements);
       return _.flatten(path1);
     }
+  },
+  
+  get_path_segment: function(path, start, end) {
+    if (start <= end) return path.slice(start,end+1);
+    result = [];
+    for(var i=end;i<=start;i++) result.unshift(path[i]);
+    return result;
   },
 
   indices_of_node_pair: function(path,pair) {
