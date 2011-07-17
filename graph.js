@@ -3,7 +3,7 @@ function Graph(graph) {
   this.node_hash = {};
   this.streets = new Array();
   this.initialize_node_data();
-  // this.d = new Display();
+  this.out = function(txt) {d = new Display(); d.out(txt);}
 }
 
 Graph.prototype = {
@@ -73,6 +73,9 @@ Graph.prototype = {
       // d.out('Error: illegal replace chunks!');
       // d.out([path1,start1,end1].join(' : '));
       // d.out([path2,start2,end2].join(' : '));
+      this.out('Error: illegal replace chunks! Paths must match.');
+      this.out(['Trying to replace',path1,start1,end1].join(' : '));
+      this.out(['with',path2,start2,end2].join(' : '));
     }
     if (!_.isEqual(existing,replacements)) {
       var index = (start1 < end1) ? start1 : end1;

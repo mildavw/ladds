@@ -3,10 +3,21 @@ describe("Graph", function() {
   
   beforeEach(function() {
     graph = new Graph(Ladds);
-    // spyOn(graph.d, 'out');
+    spyOn(graph, 'out');
   });
 
   describe("when breeding", function() {
+    
+    it('should produce the right offspring', function() {
+      var actual = graph.breed([0,1,2,3,4,5,6],[4,1,5,6,2]);
+      expect(actual.length).toEqual(6);
+      expect(actual).toContain([0,1,5,6,2,3,4,5,6])
+      expect(actual).toContain([0,1,2,6,5,4,1,3,4,5,6]);
+      expect(actual).toContain([0,1,5,6]);
+      expect(actual).toContain([0,1,2,3,4,1,5,6]);
+      expect(actual).toContain([4,1,2]);      
+      expect(actual).toContain([4,1,2,3,4,5,6,2]);      
+    });
 
     it('should be able to grab an inner path segment', function() {
       var actual = graph.get_path_segment([0,1,2,3,4],1,3);
@@ -17,14 +28,14 @@ describe("Graph", function() {
     });
 
     it('should be able to insert a path segment of one path into another', function() {
-      var actual = graph.replace_chunks([0,1,2,3,4,5,6],0,3,[1,2,0,9,10,11,3,4,5],2,6);
+      var actual = graph.replace_segment([0,1,2,3,4,5,6],0,3,[1,2,0,9,10,11,3,4,5],2,6);
       expect(actual).toEqual([0,9,10,11,3,4,5,6]);
 
-      var actual = graph.replace_chunks([0,1,2,3,4,5,6],0,3,[7,3,5,4,0,9],4,1);
+      var actual = graph.replace_segment([0,1,2,3,4,5,6],0,3,[7,3,5,4,0,9],4,1);
       expect(actual).toEqual([0,4,5,3,4,5,6]);
 
-      // graph.replace_chunks([0,1,2],0,1,[2,3],0,1);
-      // expect('graph.d.out').toHaveBeenCalledWith('Error: illegal replace chunks!')
+      graph.replace_segment([0,1,2],0,1,[2,3],0,1);
+      expect(graph.out).toHaveBeenCalledWith('Error: illegal replace chunks! Paths must match.')
     });
 
     it("should be able to create an array of paths from node x to node y", function() {
