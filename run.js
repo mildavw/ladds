@@ -8,35 +8,22 @@ if (hash) {
   d.out(loop);
   d.out(g.score(loop));
 } else {
-
-  d.out('breed');
-  var kids = g.breed([1,2,5,7,14],[2,3,7,5,22,1]);
-  d.out(kids.length);
-  for(var i=0;i<kids.length;i++) {
-    d.out(kids[i]);
-  }
-
+  var p1 = g.generate_loop();
+  var p2 = g.generate_loop();
+  var parents = [p1,p2];
+  var max = Math.max([g.score(p1).points,g.score(p1).points]);
+  d.out(g.score(p1));
   // while(true) {
-    // l = g.generate_loop();
-    // d.draw(l);
-    // s = g.score(l);
-    // if (s.points > 50) {
-    // d.draw(l);
-    // d.out(l);
-    // d.out(s);
-  //     break;
-  //   }
-  // }
-
-  // out(best.length + ' loops for mating');
-
-  // for(var i=0;i<best.length;i++) {
-  //   for(var j=0;j<best.length;j++) {
-  //     if (i!=j) {
-  //       var child = mate_concat(best[i],best[j]);
-  //       out(score(best[i]).points + ' + ' + score(best[j]).points + ' = ' + score(child).points);
+  //   var children = g.breed(p1,p2);
+  //   for(var i=0;i<children.length;i++){
+  //     if (g.score(children[i]).points > max) {
+  //       max = g.score(children[i]).points;
+  //       var fittest = i;
+  //       p1 = children[i];
   //     }
-  //   }  
+  //   }
+  //   p2 = g.generate_loop();
+  //   d.draw(p1);
+  //   d.out(max);
   // }
-
 }
