@@ -51,7 +51,8 @@ Graph.prototype = {
         return !_.isEqual(a,child) &&
           !_.isEqual(b,child) &&
           !_.isEqual(_.clone(a).reverse(),child) &&
-          !_.isEqual(_.clone(b).reverse(),child)
+          !_.isEqual(_.clone(b).reverse(),child) &&
+          !_.isUndefined(child)
         }
     var includes_array = function(haystack,needle) {
       for(var i=0;i<haystack.length;i++) {
