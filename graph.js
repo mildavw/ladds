@@ -43,10 +43,22 @@ Graph.prototype = {
   },
 
   breed: function(a,b) {
-    // create children with common loops
+    // create children with common paths
     var children = [];
     var common_nodes = _.intersection(a,b);
     var possible_common_node_pairs = this.permutations(common_nodes);
+    var is_ok = function(a,b,child) {
+        return !_.isEqual(a,child) &&
+          !_.isEqual(b,child) &&
+          !_.isEqual(_.clone(a).reverse(),child) &&
+          !_.isEqual(_.clone(b).reverse(),child)
+        }
+    var includes_array = function(haystack,needle) {
+      for(var i=0;i<haystack.length;i++) {
+        if (_.isEqual(haystack[i],needle)) return true;
+      }
+      return false;
+    }
     for(var i=0;i<possible_common_node_pairs.length;i++) {
       var pair = possible_common_node_pairs[i];
       var a_indices = this.indices_of_node_pair(a,pair);
@@ -56,29 +68,34 @@ Graph.prototype = {
           var a_index = a_indices[j];
           for(var k=0;k<b_indices.length;k++) {
             var b_index = b_indices[k];
-            children.push(this.replace_chunks(a,a_index[0],a_index[1],b,b_index[0],b_index[1]));
-            children.push(this.replace_chunks(b,b_index[0],b_index[1],a,a_index[0],a_index[1]));
+            var b_into_a = this.replace_segment(_.clone(a),a_index[0],a_index[1],_.clone(b),b_index[0],b_index[1]);
+            var a_into_b = this.replace_segment(_.clone(b),b_index[0],b_index[1],_.clone(a),a_index[0],a_index[1]);
+            if (is_ok(a,b,a_into_b) && !includes_array(children,a_into_b)) children.push(a_into_b);
+            if (is_ok(a,b,b_into_a) && !includes_array(children,b_into_a)) children.push(b_into_a);
           }
         }
       }
     }
+    children.push(a.concat(b));
     return children;
   },
 
-  replace_chunks: function(path1,start1,end1,path2,start2,end2) {
+  replace_segment: function(path1,start1,end1,path2,start2,end2) {
     // replace chunks of path1 with similar chunks of path2
     var existing = this.get_path_segment(path1, start1, end1);
     var replacements = this.get_path_segment(path2, start2, end2);
     if (existing[0] != replacements[0] || _.last(existing) != _.last(replacements)) {
-      // d.out('Error: illegal replace chunks!');
-      // d.out([path1,start1,end1].join(' : '));
-      // d.out([path2,start2,end2].join(' : '));
       this.out('Error: illegal replace chunks! Paths must match.');
       this.out(['Trying to replace',path1,start1,end1].join(' : '));
       this.out(['with',path2,start2,end2].join(' : '));
     }
     if (!_.isEqual(existing,replacements)) {
-      var index = (start1 < end1) ? start1 : end1;
+      if (start1 < end1) {
+          var index = start1;
+      } else {
+          var index = end1;
+          replacements.reverse();
+      }
       var howmany = 1+Math.abs(start1 - end1);
       path1.splice(index,howmany,replacements);
       return _.flatten(path1);
@@ -98,7 +115,7 @@ Graph.prototype = {
     result = [];
     for(var i=0;i<a.length;i++) {
       for(var j=0;j<b.length;j++) {
-          result.push([a[i],b[j]]);
+        if (a[i] != b[j]) result.push([a[i],b[j]]);
       }
     }
     return result;
@@ -116,9 +133,7 @@ Graph.prototype = {
     result = new Array();
     for(var i=0;i<array.length;i++) {
       for(var j=0;j<array.length;j++) {
-        if (i!=j) {
-          result.push([array[i],array[j]]);
-        }
+        result.push([array[i],array[j]]);
       }
     }
     return result;
