@@ -5,9 +5,9 @@ require('./graph_prototype.js');
 
 function Graph() {
   this.node_hash = {};
-  this.streets = new Array();
-  this.out = function(txt) {d = new Display(); d.out(txt);}
-};
+  this.streets = [];
+  this.out = function(txt) {d = new Display(); d.out(txt);};
+}
 Graph.prototype = Graph_prototype;
 var g = new Graph();
 g.graph = Ladds;
@@ -38,7 +38,7 @@ while(true) {
     if (g.sort_score(children[i], prodigy_max) > 0) {
       prodigies.push(children[i]);
       prodigies.sort(g.sort_score);
-      if (prodigies.length > 4) prodigies.slice(0,1)
+      if (prodigies.length > 4) prodigies.slice(0,1);
       prodigy_max = _.first(prodigies);
     }
   }

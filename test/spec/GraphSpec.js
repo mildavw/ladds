@@ -16,36 +16,36 @@ describe("Graph", function() {
 
     describe('should sort score objects properly:', function() {
       it('higher points win', function() {
-        var s1 = {'points':51, 'length':90, 'streets':73, 'backtracks':16}
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var s1 = {'points':51, 'length':90, 'streets':73, 'backtracks':16};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
       
       it('when points match, lower length wins', function() {
-        var s1 = {'points':49, 'length':89, 'streets':73, 'backtracks':16}
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var s1 = {'points':49, 'length':89, 'streets':73, 'backtracks':16};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
       
       it('when points and length, match, higher streets wins', function() {
-        var s1 = {'points':49, 'length':90, 'streets':74, 'backtracks':16}
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var s1 = {'points':49, 'length':90, 'streets':74, 'backtracks':16};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
       
       it('when points, length, and streets, match, lower backtracks wins', function() {
-        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':15}
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':15};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
       
       it('if all is equal, no change.', function() {
-        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
@@ -113,31 +113,31 @@ describe("Graph", function() {
       var actual = graph.replace_segment([0,1,2,3,4,5,6],0,3,[7,3,5,4,0,9],4,1);
       expect(actual).toEqual([0,4,5,3,4,5,6]);
     
-      var actual = graph.replace_segment([0,1,2,3],3,2,[2,5,3],2,0)
+      var actual = graph.replace_segment([0,1,2,3],3,2,[2,5,3],2,0);
       expect(actual).toEqual([0,1,2,5,3]);
     
       graph.replace_segment([0,1,2],0,1,[2,3],0,1);
-      expect(graph.out).toHaveBeenCalledWith('Error: illegal replace chunks! Paths must match.')
+      expect(graph.out).toHaveBeenCalledWith('Error: illegal replace chunks! Paths must match.');
     });
 
     it("should be able to create an array of paths from node x to node y", function() {
-       var actual = graph.indices_of_node_pair([1,2,1,4,5,1],[1,4]);
-       expect(actual.length).toEqual(3);
-       expect(actual).toContain([0,3])
-       expect(actual).toContain([2,3]);
-       expect(actual).toContain([5,3]);
+     var actual = graph.indices_of_node_pair([1,2,1,4,5,1],[1,4]);
+     expect(actual.length).toEqual(3);
+     expect(actual).toContain([0,3]);
+     expect(actual).toContain([2,3]);
+     expect(actual).toContain([5,3]);
 
-       var actual = graph.indices_of_node_pair([1,2,1,4,5,1],[1,1]);
-       expect(actual.length).toEqual(6);
-       expect(actual).toContain([0,2])
-       expect(actual).toContain([2,0])
-       expect(actual).toContain([0,5]);
-       expect(actual).toContain([5,0]);
-       expect(actual).toContain([2,5]);
-       expect(actual).toContain([5,2]);
+     var actual = graph.indices_of_node_pair([1,2,1,4,5,1],[1,1]);
+     expect(actual.length).toEqual(6);
+     expect(actual).toContain([0,2]);
+     expect(actual).toContain([2,0]);
+     expect(actual).toContain([0,5]);
+     expect(actual).toContain([5,0]);
+     expect(actual).toContain([2,5]);
+     expect(actual).toContain([5,2]);
 
-       var actual = graph.indices_of_node_pair([1,2,1,4,5,1],[99,114]);
-       expect(actual).toEqual([]);
+     var actual = graph.indices_of_node_pair([1,2,1,4,5,1],[99,114]);
+     expect(actual).toEqual([]);
      });
 
     it("should be able to find all of the indices of a node in a path", function() {

@@ -1,8 +1,8 @@
 function Graph() {
   this.node_hash = {};
-  this.streets = new Array();
-  this.out = function(txt) {d = new Display(); d.out(txt);}
-};
+  this.streets = [];
+  this.out = function(txt) {d = new Display(); d.out(txt);};
+}
 Graph.prototype = Graph_prototype;
 var g = new Graph();
 g.graph = Ladds;

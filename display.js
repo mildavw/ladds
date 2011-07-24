@@ -12,20 +12,20 @@ function Display(graph) {
 
   this.out = function(txt) {
     if (typeof(txt) == 'object' && !$.isArray(txt)) {
-        var new_txt = [];
-        for(var i in txt) {
-          new_txt.push(i + ': ' + txt[i]);
-        }
-        txt = new_txt.join(', ');
+      var new_txt = [];
+      for(var i in txt) {
+        new_txt.push(i + ': ' + txt[i]);
       }
+      txt = new_txt.join(', ');
+    }
     cur = $('#c').html();
-    $('#c').html(cur + '\n' + txt)
-  },
+    $('#c').html(cur + '\n' + txt);
+  };
 
   this.draw = function(path) {
     var points = new Array();
     for(var i=0;i<path.length;i++) {
-      points.push([this.graph.coords[path[i]][0], this.graph.coords[path[i]][1]])
+      points.push([this.graph.coords[path[i]][0], this.graph.coords[path[i]][1]]);
     }
 
     var corners = new Array;
@@ -39,15 +39,15 @@ function Display(graph) {
     }
 
     for(i=points.length-2;i>0;i--) {
-      points.splice(i,1,corners[i][0],corners[i][1])
+      points.splice(i,1,corners[i][0],corners[i][1]);
     }
 
     this.ctx.moveTo(points[0][0],points[0][1]);
-    for(var i=1;i<points.length;i++) {
+    for(i=1;i<points.length;i++) {
       this.ctx.lineTo(points[i][0],points[i][1]);
     }
     this.ctx.stroke();
-  },
+  };
 
   this.shorten_edge = function(p1,p2,length) {
     var p3 = [p2[0],p2[1]];
@@ -63,5 +63,5 @@ function Display(graph) {
       p3[1] = p2[1] + (1-2*(m<0))*(1-2*(p1[0]<p2[0]))*my;
     }
     return p3;
-  }
+  };
 }

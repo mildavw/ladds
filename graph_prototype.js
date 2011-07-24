@@ -13,10 +13,10 @@ Graph_prototype = {
       var p = this.graph.borders[i];
       this.add_edge(p[0],p[1]); this.add_edge(p[1],p[0]);
     }
-    for(var i=0;i<this.graph.streets.length;i++) {
-      var p = this.graph.streets[i];
-      this.add_edge(p[0],p[1]); this.add_edge(p[1],p[0]);
-      this.streets.push([p[0],p[1]].sort().toString());
+    for(i=0;i<this.graph.streets.length;i++) {
+      var s = this.graph.streets[i];
+      this.add_edge(s[0],s[1]); this.add_edge(s[1],s[0]);
+      this.streets.push([s[0],s[1]].sort().toString());
     }
   },
   
@@ -36,9 +36,9 @@ Graph_prototype = {
   },
 
   generate_hot_loop: function(hotties) {
-    if (hotties.length==0) return this.generate_loop();
+    if (hotties.length===0) return this.generate_loop();
     var center = this.graph.starting_and_ending_nodes;
-    var start_idx = this.random_0_to_(hotties.length-1)
+    var start_idx = this.random_0_to_(hotties.length-1);
     var paths = [];
     for(var i=0;i<2;i++) {
       var path = [ parseInt(hotties[start_idx]) ];
@@ -57,12 +57,13 @@ Graph_prototype = {
   },
   
   hot_nodes: function(loop) {
-    var all_nodes = _.keys(this.node_hash).map(function(n){return parseInt(n);})
+    var all_nodes = _.keys(this.node_hash).map(function(n){return parseInt(n);});
     var hot = _.difference(all_nodes,loop);
 
     var used_nodes = _.uniq(loop);
+    var is_used = function(n){return n==used_nodes[i];};
     for (var i=0;i<used_nodes.length;i++) {
-      var used_n = _.select(loop, function(n){return n==used_nodes[i]}).length*2;
+      var used_n = _.select(loop, is_used).length*2;
       if (_.first(loop) == used_nodes[i]) used_n--;
       if (_.last(loop)  == used_nodes[i]) used_n--;      
       var available_n = this.node_hash[used_nodes[i]].length;
@@ -72,9 +73,9 @@ Graph_prototype = {
     
     var used_edges = this.street_edges(loop);
     var tally = this.edge_tally(used_edges);
-    for(i in tally) {
-      if (tally[i] > 1) {
-        var pair = i.split(",");
+    for(var j in tally) {
+      if (tally[j] > 1) {
+        var pair = j.split(",");
         hot.push(parseInt(pair[0]));
         hot.push(parseInt(pair[1]));
       }
@@ -92,14 +93,14 @@ Graph_prototype = {
           !_.isEqual(b,child) &&
           !_.isEqual(_.clone(a).reverse(),child) &&
           !_.isEqual(_.clone(b).reverse(),child) &&
-          !_.isUndefined(child)
-        }
+          !_.isUndefined(child);
+        };
     var includes_array = function(haystack,needle) {
       for(var i=0;i<haystack.length;i++) {
         if (_.isEqual(haystack[i],needle)) return true;
       }
       return false;
-    }
+    };
     for(var i=0;i<possible_common_node_pairs.length;i++) {
       var pair = possible_common_node_pairs[i];
       var a_indices = this.indices_of_node_pair(a,pair);
@@ -131,10 +132,11 @@ Graph_prototype = {
       this.out(['with',path2,start2,end2].join(' : '));
     }
     if (!_.isEqual(existing,replacements)) {
+      var index = 0;
       if (start1 < end1) {
-          var index = start1;
+          index = start1;
       } else {
-          var index = end1;
+          index = end1;
           replacements.reverse();
       }
       var howmany = 1+Math.abs(start1 - end1);
@@ -171,7 +173,7 @@ Graph_prototype = {
   },
   
   permutations: function(array) {
-    result = new Array();
+    result = [];
     for(var i=0;i<array.length;i++) {
       for(var j=0;j<array.length;j++) {
         result.push([array[i],array[j]]);
@@ -185,7 +187,7 @@ Graph_prototype = {
   },
 
   street_edges: function(loop) {
-    var edges = new Array();
+    var edges = [];
     for(var i=0;i<_.size(loop);i++) {
       var edge = [ loop[i], loop[i+1] ].sort().toString();
       if (this.streets.indexOf(edge) > -1) edges.push(edge);
@@ -196,7 +198,7 @@ Graph_prototype = {
   edge_tally: function(edges) {
     var tally = {};
     for(i=0;i<edges.length;i++) {
-      if (tally[edges[i]] == undefined) {
+      if (tally[edges[i]] === undefined) {
         tally[edges[i]] = 1;
       } else {
         tally[edges[i]]++;
@@ -209,7 +211,7 @@ Graph_prototype = {
     var street_edges = this.street_edges(loop);
     var tally = this.edge_tally(street_edges);
     var score = {'points':0, 'length':loop.length-1, 'streets':street_edges.length, 'backtracks':0};
-    for(i in tally) {
+    for(var i in tally) {
       if (tally[i] > 1) {
         score.points--;
         score.backtracks += tally[i];
