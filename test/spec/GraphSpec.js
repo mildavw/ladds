@@ -1,12 +1,76 @@
 describe("Graph", function() {
   var graph;
-  
+
   beforeEach(function() {
-    graph = new Graph(Ladds);
+    graph = new Graph();
+    graph.graph = Ladds;
+    graph.initialize_node_data();
     spyOn(graph, 'out');
   });
 
+  describe("when scoring", function() {
+    
+    it('should produce a score given a loop', function() {
+
+    });
+
+    describe('should sort score objects properly:', function() {
+      it('higher points win', function() {
+        var s1 = {'points':51, 'length':90, 'streets':73, 'backtracks':16}
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var actual = [s1,s2].sort(graph.sort_score);
+        expect(actual[0]).toEqual(s2);
+      });
+      
+      it('when points match, lower length wins', function() {
+        var s1 = {'points':49, 'length':89, 'streets':73, 'backtracks':16}
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var actual = [s1,s2].sort(graph.sort_score);
+        expect(actual[0]).toEqual(s2);
+      });
+      
+      it('when points and length, match, higher streets wins', function() {
+        var s1 = {'points':49, 'length':90, 'streets':74, 'backtracks':16}
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var actual = [s1,s2].sort(graph.sort_score);
+        expect(actual[0]).toEqual(s2);
+      });
+      
+      it('when points, length, and streets, match, lower backtracks wins', function() {
+        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':15}
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var actual = [s1,s2].sort(graph.sort_score);
+        expect(actual[0]).toEqual(s2);
+      });
+      
+      it('if all is equal, no change.', function() {
+        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16}
+        var actual = [s1,s2].sort(graph.sort_score);
+        expect(actual[0]).toEqual(s2);
+      });
+    });
+    
+  });
+  
   describe("when breeding", function() {
+    
+    it('should provide "hot" nodes to build a random mate around', function() {
+      // This is a list of nodes of interest that we want to focus changes on
+      // They include unused nodes, nodes with 2 or more unused street edges,
+      // and nodes with backtracked edges that are not border edges.
+      var actual = graph.hot_nodes([3,2,1,12,28,21,17,25,22,18,17,14,8,9,4,5,10,9,4,5,6,5]);
+      expect(actual).toContain(3); // has two available edges
+      expect(actual).toContain(16); // not used
+      expect(actual).toContain(28); // two of four edges used
+      expect(actual).toContain(9); // 9-4 is backtracked
+      expect(actual).toContain(4); // 9-4 is backtracked
+
+      expect(actual).not.toContain(1); // one available edge
+      expect(actual).not.toContain(2); // no available edges
+      expect(actual).not.toContain(17); // all four edges used
+      expect(actual).not.toContain(6); // backtracked, but only on a border
+    });
     
     it('should produce the right offspring', function() {
       var actual = graph.breed([0,1,2],[0,4,2]);

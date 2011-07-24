@@ -17,11 +17,18 @@
   <script type="text/javascript" src="spec/GraphSpec.js"></script>
 
   <!-- include spec files here... -->
-  <script type="text/javascript" src="../Ladds.js"></script>
-  <script type="text/javascript" src="../Graph.js"></script>
-  <script type="text/javascript" src="../Display.js"></script>
+  <script type="text/javascript" src="../ladds_object.js"></script>
+  <script type="text/javascript" src="../graph_prototype.js"></script>
+  <script type="text/javascript" src="../display.js"></script>
 
   <script type="text/javascript">
+    function Graph() {
+      this.node_hash = {};
+      this.streets = new Array();
+      this.out = function(txt) {d = new Display(); d.out(txt);}
+    };
+    Graph.prototype = Graph_prototype;
+
     (function() {
       var jasmineEnv = jasmine.getEnv();
       jasmineEnv.updateInterval = 1000;

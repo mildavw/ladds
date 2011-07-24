@@ -1,12 +1,5 @@
-function Graph(graph) {
-  this.graph = graph;
-  this.node_hash = {};
-  this.streets = new Array();
-  this.initialize_node_data();
-  this.out = function(txt) {d = new Display(); d.out(txt);}
-}
-
-Graph.prototype = {
+Graph_prototype = {
+  
   add_edge: function(p1,p2) {
     if (typeof(this.node_hash[p1]) == 'undefined') {
       this.node_hash[p1] = [p2];
@@ -26,7 +19,7 @@ Graph.prototype = {
       this.streets.push([p[0],p[1]].sort().toString());
     }
   },
-
+  
   generate_loop: function() {
     var center = this.graph.starting_and_ending_nodes;
     var start_idx = this.random_0_to_(_.size(center));
@@ -37,9 +30,56 @@ Graph.prototype = {
       var next_idx = this.random_0_to_(next_options.length-1);
       var next_step = next_options[next_idx];
       path.push( next_step );
-      if ((center.indexOf(path[path.length-1])>-1) && (path.length > 8)) break;
+      if ((center.indexOf(_.last(path))>-1) && (path.length > 8)) break;
     }
     return path;
+  },
+
+  generate_hot_loop: function(hotties) {
+    if (hotties.length==0) return this.generate_loop();
+    var center = this.graph.starting_and_ending_nodes;
+    var start_idx = this.random_0_to_(hotties.length-1)
+    var paths = [];
+    for(var i=0;i<2;i++) {
+      var path = [ parseInt(hotties[start_idx]) ];
+      while (true) {
+        var last_step = _.last(path);
+        var next_options = _.without(this.node_hash[last_step], path[path.length-2]);  //don't backtrack immediately
+        var next_idx = this.random_0_to_(next_options.length-1);
+        var next_step = next_options[next_idx];
+        path.push( next_step );
+        if ((center.indexOf(path[path.length-1])>-1) && (path.length > 8)) break;
+      }
+      paths[i] = path;
+    }
+    paths[0].splice(0,1);
+    return paths[0].reverse().concat(paths[1]);
+  },
+  
+  hot_nodes: function(loop) {
+    var all_nodes = _.keys(this.node_hash).map(function(n){return parseInt(n);})
+    var hot = _.difference(all_nodes,loop);
+
+    var used_nodes = _.uniq(loop);
+    for (var i=0;i<used_nodes.length;i++) {
+      var used_n = _.select(loop, function(n){return n==used_nodes[i]}).length*2;
+      if (_.first(loop) == used_nodes[i]) used_n--;
+      if (_.last(loop)  == used_nodes[i]) used_n--;      
+      var available_n = this.node_hash[used_nodes[i]].length;
+      var unused_n = available_n - used_n;
+      if (unused_n > 1) hot.push(used_nodes[i]);
+    }
+    
+    var used_edges = this.street_edges(loop);
+    var tally = this.edge_tally(used_edges);
+    for(i in tally) {
+      if (tally[i] > 1) {
+        var pair = i.split(",");
+        hot.push(parseInt(pair[0]));
+        hot.push(parseInt(pair[1]));
+      }
+    }
+    return _.uniq(hot).sort();
   },
 
   breed: function(a,b) {
@@ -144,14 +184,16 @@ Graph.prototype = {
     return Math.floor(Math.random()*(i+1));
   },
 
-  score: function(loop) {
+  street_edges: function(loop) {
     var edges = new Array();
     for(var i=0;i<_.size(loop);i++) {
       var edge = [ loop[i], loop[i+1] ].sort().toString();
       if (this.streets.indexOf(edge) > -1) edges.push(edge);
     }
-    edges.sort();
+    return edges.sort();    
+  },
 
+  edge_tally: function(edges) {
     var tally = {};
     for(i=0;i<edges.length;i++) {
       if (tally[edges[i]] == undefined) {
@@ -159,9 +201,14 @@ Graph.prototype = {
       } else {
         tally[edges[i]]++;
       }
-    }
+    }    
+    return tally;
+  },
 
-    var score = {'points':0, 'length':loop.length-1, 'streets':edges.length, 'backtracks':0};
+  score: function(loop) {
+    var street_edges = this.street_edges(loop);
+    var tally = this.edge_tally(street_edges);
+    var score = {'points':0, 'length':loop.length-1, 'streets':street_edges.length, 'backtracks':0};
     for(i in tally) {
       if (tally[i] > 1) {
         score.points--;
@@ -171,5 +218,17 @@ Graph.prototype = {
       }
     }
     return score;
+  },
+  
+  sort_score: function(s1,s2) {
+    if (s1.points > s2.points) return 1;
+    if (s2.points > s1.points) return -1;
+    if (s1.length < s2.length) return 1;
+    if (s2.length < s1.length) return -1;
+    if (s1.streets > s2.streets) return 1;
+    if (s2.streets > s1.streets) return -1;
+    if (s1.backtracks < s2.backtracks) return 1;
+    if (s2.backtracks < s1.backtracks) return -1;
+    return 0;
   }
-}
+};
