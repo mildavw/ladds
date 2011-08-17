@@ -41,7 +41,7 @@ Graph_prototype = {
     var start_idx = this.random_0_to_(hotties.length-1);
     var paths = [];
     for(var i=0;i<2;i++) {
-      var path = [ parseInt(hotties[start_idx]) ];
+      var path = [ parseInt(hotties[start_idx],10) ];
       while (true) {
         var last_step = _.last(path);
         var next_options = _.without(this.node_hash[last_step], path[path.length-2]);  //don't backtrack immediately
@@ -57,7 +57,7 @@ Graph_prototype = {
   },
   
   hot_nodes: function(loop) {
-    var all_nodes = _.keys(this.node_hash).map(function(n){return parseInt(n);});
+    var all_nodes = _.keys(this.node_hash).map(function(n){return parseInt(n,10);});
     var hot = _.difference(all_nodes,loop);
 
     var used_nodes = _.uniq(loop);
@@ -76,8 +76,8 @@ Graph_prototype = {
     for(var j in tally) {
       if (tally[j] > 1) {
         var pair = j.split(",");
-        hot.push(parseInt(pair[0]));
-        hot.push(parseInt(pair[1]));
+        hot.push(parseInt(pair[0],10));
+        hot.push(parseInt(pair[1],10));
       }
     }
     return _.uniq(hot).sort();
@@ -210,16 +210,29 @@ Graph_prototype = {
   score: function(loop) {
     var street_edges = this.street_edges(loop);
     var tally = this.edge_tally(street_edges);
-    var score = {'points':0, 'length':loop.length-1, 'streets':street_edges.length, 'backtracks':0};
+    var score = {'points':0, 'length':loop.length-1, 'streets':street_edges.length, 'backtracks':0, 'distance':0};
     for(var i in tally) {
       if (tally[i] > 1) {
         score.points--;
-        score.backtracks += tally[i];
+        score.backtracks += tally[i]-1;
       } else {
         score.points++;
       }
+      score.distance += this.distance(i);
     }
+    score.distance = Math.round(score.distance * 0.417/(602-23),2)/100;
+    // Google maps says it's 0.417 miles from node 94 to 99
     return score;
+  },
+  
+  distance: function(edge) {
+    // console.info(edge);
+    var nodes = edge.split(',');
+    var x1 = this.graph.coords[nodes[0]][0];
+    var y1 = this.graph.coords[nodes[0]][1];
+    var x2 = this.graph.coords[nodes[1]][0];
+    var y2 = this.graph.coords[nodes[1]][1];
+    return Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
   },
   
   sort_score: function(s1,s2) {
@@ -231,6 +244,8 @@ Graph_prototype = {
     if (s2.streets > s1.streets) return -1;
     if (s1.backtracks < s2.backtracks) return 1;
     if (s2.backtracks < s1.backtracks) return -1;
+    if (s1.distance < s2.distance) return 1;
+    if (s2.distance < s1.distance) return -1;
     return 0;
   }
 };
