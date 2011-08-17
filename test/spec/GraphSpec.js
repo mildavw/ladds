@@ -8,51 +8,86 @@ describe("Graph", function() {
     spyOn(graph, 'out');
   });
 
-  describe("when scoring", function() {
-    
-    it('should produce a score given a loop', function() {
+  describe('scoring', function() {
 
+    describe('should produce a point score given a loop', function() {
+      it('get zero points for border edges', function() {
+        expect(0).toEqual(graph.score([1,2,3]).points);
+      });
+      it('get one point for street edges traversed once', function() {
+        expect(1).toEqual(graph.score([1,12]).points);
+        expect(2).toEqual(graph.score([1,12,28]).points);
+      });
+      it('get -1 points for street edges traversed more than once', function() {
+        expect(-1).toEqual(graph.score([1,12,1,12]).points);
+      });
+      it('combine rules', function() {
+        expect(1).toEqual(graph.score([4,5,10,9,4,5,10]).points);
+      });
+    });
+
+    it('should return total length', function() {
+      expect(1).toEqual(graph.score([4,5]).length);
+      expect(6).toEqual(graph.score([4,5,10,9,4,5,10]).length);
+    });
+
+    it('should return the total number of streets (non-border) traversed', function() {
+      expect(1).toEqual(graph.score([4,9]).streets);
+      expect(4).toEqual(graph.score([4,5,10,9,4,5,10]).streets);
+    });
+
+    it('should return the total number of backtracks on streets only', function() {
+      expect(0).toEqual(graph.score([1,2,1,2]).backtracks);
+      expect(2).toEqual(graph.score([1,12,1,12]).backtracks);
+      expect(1).toEqual(graph.score([4,5,10,9,4,5,10]).backtracks);
     });
 
     describe('should sort score objects properly:', function() {
       it('higher points win', function() {
-        var s1 = {'points':51, 'length':90, 'streets':73, 'backtracks':16};
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
+        var s1 = {'points':51, 'length':90, 'streets':73, 'backtracks':16, 'distance':2.0};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16, 'distance':1.5};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
-      
+
       it('when points match, lower length wins', function() {
-        var s1 = {'points':49, 'length':89, 'streets':73, 'backtracks':16};
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
+        var s1 = {'points':49, 'length':89, 'streets':73, 'backtracks':16, 'distance':2.0};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16, 'distance':1.5};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
-      
-      it('when points and length, match, higher streets wins', function() {
-        var s1 = {'points':49, 'length':90, 'streets':74, 'backtracks':16};
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
+
+      it('when points and length match, higher streets wins', function() {
+        var s1 = {'points':49, 'length':90, 'streets':74, 'backtracks':16, 'distance':2.0};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16, 'distance':1.5};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
-      
-      it('when points, length, and streets, match, lower backtracks wins', function() {
-        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':15};
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
+
+      it('when points, length, and streets match, lower backtracks wins', function() {
+        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':15, 'distance':2.0};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16, 'distance':1.5};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
-      
+
+      it('when points, length, streets, and backtracks match, shorter distance wins', function() {
+        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':16, 'distance':1.5};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16, 'distance':2.0};
+        var actual = [s1,s2].sort(graph.sort_score);
+        expect(actual[0]).toEqual(s2);
+      });
+
       it('if all is equal, no change.', function() {
-        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
-        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16};
+        var s1 = {'points':49, 'length':90, 'streets':73, 'backtracks':16, 'distance':2.0};
+        var s2 = {'points':49, 'length':90, 'streets':73, 'backtracks':16, 'distance':2.0};
         var actual = [s1,s2].sort(graph.sort_score);
         expect(actual[0]).toEqual(s2);
       });
     });
-    
+
   });
-  
+
   describe("when breeding", function() {
     
     it('should provide "hot" nodes to build a random mate around', function() {
