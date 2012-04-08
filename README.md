@@ -16,6 +16,17 @@ You can imagine my surprise. OK, maybe you can't. This is a pretty high scoring 
 
 If you load [that page with no hash](http:mildavw.github.com/ladds), it will generate a random solution and show its score.
 
+To generate your own paths run `node node-run.js`. The output shows you the two "Adam and Eve" paths and then the subsequent offspring that have higher scores than their parents in the form of:
+
+{ points: 80,
+  length: 123,
+  streets: 108,
+  backtracks: 10,
+  distance: 0.05 }
+file:///Users/davemiller/Ladds/index.html#40,51,50,32,11,1,12,28,32,11,20,44,45,73,68,65,47,48,60,49,50,70,68,46,47,37,34,27,20,44,81,87,70,74,79,67,64,62,52,53,54,63,66,69,57,56,55,43,38,56,66,69,72,75,80,86,78,71,77,84,88,89,90,86,78,82,85,84,88,89,93,92,88,89,85,86,80,98,99,91,83,59,24,31,58,57,35,33,30,42,41,36,29,25,17,18,19,16,15,18,22,26,19,16,10,5,4,9,10,5,6,23,36,21,2,3,4,9,15,14,17,21,28,40
+
+Load the given "file:///..." url in your browser to see the path.
+
 I attempted a few tweaks to the breeding algorithm but never did match that first high score!
 
 Dave
