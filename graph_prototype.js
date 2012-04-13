@@ -232,18 +232,25 @@ Graph_prototype = {
     var y2 = this.graph.coords[nodes[1]][1];
     return Math.sqrt(Math.pow((x2-x1),2) + Math.pow((y2-y1),2));
   },
-  
+
   sort_score: function(s1,s2) {
-    if (s1.points > s2.points) return 1;
-    if (s2.points > s1.points) return -1;
-    if (s1.length < s2.length) return 1;
-    if (s2.length < s1.length) return -1;
-    if (s1.streets > s2.streets) return 1;
-    if (s2.streets > s1.streets) return -1;
-    if (s1.backtracks < s2.backtracks) return 1;
-    if (s2.backtracks < s1.backtracks) return -1;
-    if (s1.distance < s2.distance) return 1;
-    if (s2.distance < s1.distance) return -1;
-    return 0;
+    var ordered_scoring_attributes = [
+      ['points',    'larger'],
+      ['length',    'smaller'],
+      ['streets',   'larger'],
+      ['backtracks','smaller'],
+      ['distance',  'smaller']
+    ];
+
+    var decider = _.find( ordered_scoring_attributes, function(attribute) {
+      return (s1[attribute[0]] !== s2[attribute[0]]);
+    });
+
+    if (decider) {
+      var order = decider[1] === 'larger' ? 1 : -1;
+      return (s1[decider[0]] - s2[decider[0]]) * order;
+    } else {
+      return 0;
+    }
   }
 };
