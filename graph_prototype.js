@@ -105,16 +105,14 @@ Graph_prototype = {
       var pair = possible_common_node_pairs[i];
       var a_indices = this.indices_of_node_pair(a,pair);
       var b_indices = this.indices_of_node_pair(b,pair);
-      if (_.size(a_indices)>0 && _.size(b_indices)>0) {
-        for(var j=0;j<a_indices.length;j++) {
-          var a_index = a_indices[j];
-          for(var k=0;k<b_indices.length;k++) {
-            var b_index = b_indices[k];
-            var b_into_a = this.replace_segment(_.clone(a),a_index[0],a_index[1],_.clone(b),b_index[0],b_index[1]);
-            var a_into_b = this.replace_segment(_.clone(b),b_index[0],b_index[1],_.clone(a),a_index[0],a_index[1]);
-            if (is_ok(a,b,a_into_b) && !includes_array(children,a_into_b)) children.push(a_into_b);
-            if (is_ok(a,b,b_into_a) && !includes_array(children,b_into_a)) children.push(b_into_a);
-          }
+      for(var j=0;j<a_indices.length;j++) {
+        var a_index = a_indices[j];
+        for(var k=0;k<b_indices.length;k++) {
+          var b_index = b_indices[k];
+          var b_into_a = this.replace_segment(_.clone(a),a_index[0],a_index[1],_.clone(b),b_index[0],b_index[1]);
+          var a_into_b = this.replace_segment(_.clone(b),b_index[0],b_index[1],_.clone(a),a_index[0],a_index[1]);
+          if (is_ok(a,b,a_into_b) && !includes_array(children,a_into_b)) children.push(a_into_b);
+          if (is_ok(a,b,b_into_a) && !includes_array(children,b_into_a)) children.push(b_into_a);
         }
       }
     }
