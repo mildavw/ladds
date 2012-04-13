@@ -1,5 +1,5 @@
 Graph_prototype = {
-  
+
   add_edge: function(p1,p2) {
     if (typeof(this.node_hash[p1]) == 'undefined') {
       this.node_hash[p1] = [p2];
@@ -7,8 +7,8 @@ Graph_prototype = {
       this.node_hash[p1].push(p2);
     }
   },
-  
-  initialize_node_data: function() {  
+
+  initialize_node_data: function() {
     for(var i=0;i<this.graph.borders.length;i++) {
       var p = this.graph.borders[i];
       this.add_edge(p[0],p[1]); this.add_edge(p[1],p[0]);
@@ -19,7 +19,7 @@ Graph_prototype = {
       this.streets.push([s[0],s[1]].sort().toString());
     }
   },
-  
+
   generate_loop: function() {
     var center = this.graph.starting_and_ending_nodes;
     var start_idx = this.random_0_to_(_.size(center));
@@ -55,7 +55,7 @@ Graph_prototype = {
     paths[0].splice(0,1);
     return paths[0].reverse().concat(paths[1]);
   },
-  
+
   hot_nodes: function(loop) {
     var all_nodes = _.keys(this.node_hash).map(function(n){return parseInt(n,10);});
     var hot = _.difference(all_nodes,loop);
@@ -65,12 +65,12 @@ Graph_prototype = {
     for (var i=0;i<used_nodes.length;i++) {
       var used_n = _.select(loop, is_used).length*2;
       if (_.first(loop) == used_nodes[i]) used_n--;
-      if (_.last(loop)  == used_nodes[i]) used_n--;      
+      if (_.last(loop)  == used_nodes[i]) used_n--;
       var available_n = this.node_hash[used_nodes[i]].length;
       var unused_n = available_n - used_n;
       if (unused_n > 1) hot.push(used_nodes[i]);
     }
-    
+
     var used_edges = this.street_edges(loop);
     var tally = this.edge_tally(used_edges);
     for(var j in tally) {
@@ -142,7 +142,7 @@ Graph_prototype = {
       return _.flatten(path1);
     }
   },
-  
+
   get_path_segment: function(path, start, end) {
     if (start <= end) return path.slice(start,end+1);
     result = [];
@@ -169,7 +169,7 @@ Graph_prototype = {
     }
     return result;
   },
-  
+
   permutations: function(array) {
     result = [];
     for(var i=0;i<array.length;i++) {
@@ -190,7 +190,7 @@ Graph_prototype = {
       var edge = [ loop[i], loop[i+1] ].sort().toString();
       if (this.streets.indexOf(edge) > -1) edges.push(edge);
     }
-    return edges.sort();    
+    return edges.sort();
   },
 
   edge_tally: function(edges) {
@@ -201,7 +201,7 @@ Graph_prototype = {
       } else {
         tally[edges[i]]++;
       }
-    }    
+    }
     return tally;
   },
 
@@ -222,7 +222,7 @@ Graph_prototype = {
     // Google maps says it's 0.417 miles from node 94 to 99
     return score;
   },
-  
+
   distance: function(edge) {
     // console.info(edge);
     var nodes = edge.split(',');
