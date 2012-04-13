@@ -218,7 +218,7 @@ Graph_prototype = {
       }
       score.distance += this.distance(i);
     }
-    score.distance = Math.round(score.distance * 0.417/(602-23),2)/100;
+    score.distance = Math.round(score.distance * 100 * 0.417/(602-23))/100;
     // Google maps says it's 0.417 miles from node 94 to 99
     return score;
   },
